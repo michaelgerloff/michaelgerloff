@@ -1,0 +1,82 @@
+# clear workspace
+rm(list = ls())
+
+library(ggplot2)
+library(dplyr)
+library(ggrepel)
+
+E13_1 <- 4187.45
+E13_2 <- 4526.02
+
+working_hours <- c(0.5*40, 0.65*40, 0.75*40, 1*40, 45, 50, 55, 60, 65)
+E13_1_50 <- c(0.5*E13_1, 0.5*E13_1, 0.5*E13_1, 0.5*E13_1, 0.5*E13_1, 0.5*E13_1, 0.5*E13_1, 0.5*E13_1, 0.5*E13_1)
+E13_1_65 <- c(0.65*E13_1, 0.65*E13_1, 0.65*E13_1, 0.65*E13_1, 0.65*E13_1, 0.65*E13_1, 0.65*E13_1, 0.65*E13_1, 0.65*E13_1)
+E13_1_75 <- c(0.75*E13_1, 0.75*E13_1, 0.75*E13_1, 0.75*E13_1, 0.75*E13_1, 0.75*E13_1, 0.75*E13_1, 0.75*E13_1, 0.75*E13_1)
+E13_1_100 <- c(E13_1, E13_1, E13_1, E13_1, E13_1, E13_1, E13_1, E13_1, E13_1)
+
+E13_2_50 <- c(0.5*E13_2, 0.5*E13_2, 0.5*E13_2, 0.5*E13_2, 0.5*E13_2, 0.5*E13_2, 0.5*E13_2, 0.5*E13_2, 0.5*E13_2)
+E13_2_65 <- c(0.65*E13_2, 0.65*E13_2, 0.65*E13_2, 0.65*E13_2, 0.65*E13_2, 0.65*E13_2, 0.65*E13_2, 0.65*E13_2, 0.65*E13_2)
+E13_2_75 <- c(0.75*E13_2, 0.75*E13_2, 0.75*E13_2, 0.75*E13_2, 0.75*E13_2, 0.75*E13_2, 0.75*E13_2, 0.75*E13_2, 0.75*E13_2)
+E13_2_100 <- c(E13_2, E13_2, E13_2, E13_2, E13_2, E13_2, E13_2, E13_2, E13_2)
+
+E13_1_50_df <- cbind(c("50% TVöD E13 I", "50% TVöD E13 I", "50% TVöD E13 I", "50% TVöD E13 I", "50% TVöD E13 I", "50% TVöD E13 I", "50% TVöD E13 I", "50% TVöD E13 I", "50% TVöD E13 I"), working_hours, E13_1_50)
+E13_1_65_df <- cbind(c("65% TVöD E13 I", "65% TVöD E13 I", "65% TVöD E13 I", "65% TVöD E13 I", "65% TVöD E13 I", "65% TVöD E13 I", "65% TVöD E13 I", "65% TVöD E13 I", "65% TVöD E13 I"), working_hours, E13_1_65)
+E13_1_75_df <- cbind(c("75% TVöD E13 I", "75% TVöD E13 I", "75% TVöD E13 I", "75% TVöD E13 I", "75% TVöD E13 I", "75% TVöD E13 I", "75% TVöD E13 I", "75% TVöD E13 I", "75% TVöD E13 I"), working_hours, E13_1_75)
+E13_1_100_df <- cbind(c("100% TVöD E13 I", "100% TVöD E13 I", "100% TVöD E13 I", "100% TVöD E13 I", "100% TVöD E13 I", "100% TVöD E13 I", "100% TVöD E13 I", "100% TVöD E13 I", "100% TVöD E13 I"), working_hours, E13_1_100)
+
+E13_2_50_df <- cbind(c("50% TVöD E13 II", "50% TVöD E13 II", "50% TVöD E13 II", "50% TVöD E13 II", "50% TVöD E13 II", "50% TVöD E13 II", "50% TVöD E13 II", "50% TVöD E13 II", "50% TVöD E13 II"), working_hours, E13_2_50)
+E13_2_65_df <- cbind(c("65% TVöD E13 II", "65% TVöD E13 II", "65% TVöD E13 II", "65% TVöD E13 II", "65% TVöD E13 II", "65% TVöD E13 II", "65% TVöD E13 II", "65% TVöD E13 II", "65% TVöD E13 II"), working_hours, E13_2_65)
+E13_2_75_df <- cbind(c("75% TVöD E13 II", "75% TVöD E13 II", "75% TVöD E13 II", "75% TVöD E13 II", "75% TVöD E13 II", "75% TVöD E13 II", "75% TVöD E13 II", "75% TVöD E13 II", "75% TVöD E13 II"), working_hours, E13_2_75)
+E13_2_100_df <- cbind(c("100% TVöD E13 II", "100% TVöD E13 II", "100% TVöD E13 II", "100% TVöD E13 II", "100% TVöD E13 II", "100% TVöD E13 II", "100% TVöD E13 II", "100% TVöD E13 II", "100% TVöD E13 II"), working_hours, E13_2_100)
+
+x <- 20:65
+y <- 12*4.3*x
+Mindestlohn_df <- data.frame(x,y)
+Mindestlohn_df$contract <- NA
+names(Mindestlohn_df) <- c("hours", "salary", "contract")
+
+comb_df <- rbind(E13_1_50_df, E13_1_65_df, E13_1_75_df, E13_1_100_df, E13_2_50_df, E13_2_65_df, E13_2_75_df, E13_2_100_df)
+colnames(comb_df) <- c("contract", "hours", "salary")
+comb_df <- as.data.frame(comb_df)
+comb_df$hours <- as.numeric(comb_df$hours)
+comb_df$salary <- as.numeric(comb_df$salary)
+comb_df$label <- NA
+comb_df$label[which(comb_df$hours == min(comb_df$hours))] <- comb_df$contract[which(comb_df$hours == min(comb_df$hours))]
+label <- comb_df$label
+
+ggplot(data=comb_df, aes(x=hours, y=salary, group=contract, color=contract)) +
+  geom_line(data = comb_df)+
+  geom_point(data = comb_df)+
+  geom_label_repel(aes(label = label),
+                   nudge_x = 0,
+                   na.rm = TRUE) +
+  geom_ribbon(data=Mindestlohn_df, ymin=-Inf, aes(ymax=salary), fill="red", alpha=0.2)+
+  scale_x_continuous(breaks = c(20, 25, 30, 35, 40, 45, 50, 55, 60, 65))+
+  labs(x="wöchentliche Arbeitsstunden", y="Monatslohn [€]")+
+  annotate(geom="text", x=40, y=1000, label="Monatslohn unterhalb des gesetlichen Mindestlohns", color="black")+
+  theme_classic()+
+  theme(legend.position = "none")
+
+
+comb_hourly <- comb_df$salary/(comb_df$hours*4.3)
+comb_hourly_df <- as.data.frame(cbind(comb_df$contract, comb_df$hours, comb_hourly))
+colnames(comb_hourly_df) <- c("contract", "hours", "salary/hour")
+comb_hourly_df$hours <- as.numeric(comb_hourly_df$hours)
+comb_hourly_df$`salary/hour` <- as.numeric(comb_hourly_df$`salary/hour`)
+comb_hourly_df$label <- NA
+comb_hourly_df$label[which(comb_hourly_df$hours == min(comb_hourly_df$hours))] <- comb_hourly_df$contract[which(comb_hourly_df$hours == min(comb_hourly_df$hours))]
+
+ggplot(data=comb_hourly_df, aes(x=hours, y=`salary/hour`, group=contract, color=contract)) +  
+  geom_line() +
+  geom_point()+
+  geom_label_repel(aes(label = label),
+                   nudge_x = 1,
+                   na.rm = TRUE) +
+  geom_ribbon(ymin=-Inf, aes(ymax=12), fill='red', alpha=0.02) +
+  scale_x_continuous(breaks = c(20, 25, 30, 35, 40, 45, 50, 55, 60, 65))+
+  labs(x="wöchentliche Arbeitsstunden", y="Stundenlohn [€/h]")+
+  annotate(geom="text", x=37, y=8, label="Stundenlohn unterhalb des gesetlichen Mindestlohns", color="black")+
+  theme_classic()+
+  theme(legend.position = "none")
+
+
