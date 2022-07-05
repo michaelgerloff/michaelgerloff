@@ -82,13 +82,15 @@ colnames(x_Z_df) <- c("hours", "salary/hour", "contract")
 ggplot(data=comb_hourly_df, aes(x=hours, y=`salary/hour`, group=contract, color=contract)) +  
   geom_line() +
   geom_point()+
+  geom_hline(yintercept = max(subset(comb_hourly_df, contract == "50% TVöD E13 I", select = `salary/hour`)), color="grey", size = 1)+
+  geom_hline(yintercept = max(subset(comb_hourly_df, contract == "50% TVöD E13 II", select = `salary/hour`)), color="grey", size = 1)+
   geom_label_repel(aes(label = label),
                    nudge_x = 2,
                    nudge_y = 0,
                    na.rm = TRUE) +
   geom_ribbon(data = x_Z_df, ymin=-Inf, aes(ymax=12), fill='red', alpha=0.2) +
   scale_x_continuous(breaks = c(20, 25, 30, 35, 40, 45, 50, 55, 60, 65))+
-  scale_y_continuous(breaks = c(seq(0, by = 5, len = 6), 12))+
+  scale_y_continuous(breaks = c(seq(0, by = 5, len = 6), 12, round(max(subset(comb_hourly_df, contract == "50% TVöD E13 I", select = `salary/hour`)), digits = 2), round(max(subset(comb_hourly_df, contract == "50% TVöD E13 II", select = `salary/hour`)), digits = 2)))+
   labs(x="wöchentliche Arbeitsstunden", y="Stundenlohn [€/h]")+
   annotate(geom="text", x=37, y=8, label="Stundenlohn unterhalb des gesetlichen Mindestlohns", color="black")+
   theme_classic()+
